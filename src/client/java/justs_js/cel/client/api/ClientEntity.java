@@ -153,7 +153,7 @@ public abstract class ClientEntity extends PathfinderMob {
         return brain;
     }
 
-    private void registerBrainGoals(ClientBrain<? extends ClientEntity> brain) {
+    protected void registerBrainGoals(ClientBrain<? extends ClientEntity> brain) {
         brain.setSchedule(Schedule.EMPTY);
 
         brain.addActivity(
