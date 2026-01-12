@@ -1,12 +1,10 @@
 package justs_js.cel.client.api.behaviour;
 
-import justs_js.cel.CELModClient;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.behavior.RandomStroll;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import org.jetbrains.annotations.NotNull;
@@ -42,11 +40,6 @@ public abstract class ClientBehavior<E extends LivingEntity> implements ClientBe
     }
 
     public final boolean tryStart(ClientLevel clientLevel, E livingEntity, long l) {
-//        if (!this.hasRequiredMemories(livingEntity)) {
-//            CELModClient.LOGGER.info("{}: {} - {}", debugString(), this.hasRequiredMemories(livingEntity), "empty");
-//        } else {
-//            CELModClient.LOGGER.info("{}: {} - {}", debugString(), this.hasRequiredMemories(livingEntity), this.checkExtraStartConditions(clientLevel, livingEntity));
-//        }
         if (this.hasRequiredMemories(livingEntity) && this.checkExtraStartConditions(clientLevel, livingEntity)) {
             this.status = Behavior.Status.RUNNING;
             int i = this.minDuration + clientLevel.getRandom().nextInt(this.maxDuration + 1 - this.minDuration);
@@ -112,8 +105,6 @@ public abstract class ClientBehavior<E extends LivingEntity> implements ClientBe
             memoryStatus = entry.getValue();
         } while(livingEntity.getBrain().checkMemory(memoryModuleType, memoryStatus));
 
-        //Optional<?> optional = livingEntity.getBrain().getMemory(memoryModuleType);
-        //CELModClient.LOGGER.info("{} - {} - {}", memoryModuleType.toString(), memoryStatus.toString(), optional.map(Object::toString).orElse("empty"));
         return false;
     }
 

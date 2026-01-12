@@ -9,17 +9,14 @@ import com.mojang.serialization.JavaOps;
 import justs_js.cel.client.api.behaviour.*;
 import justs_js.cel.client.api.sensor.ClientSensor;
 import justs_js.cel.client.api.sensor.ClientSensorType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.util.valueproviders.BiasedToBottomInt;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.behavior.DoNothing;
-import net.minecraft.world.entity.ai.behavior.RunOne;
-import net.minecraft.world.entity.ai.behavior.SetEntityLookTarget;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
@@ -27,7 +24,6 @@ import net.minecraft.world.entity.schedule.Schedule;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Map;
 
 public abstract class ClientEntity extends PathfinderMob {
@@ -78,7 +74,11 @@ public abstract class ClientEntity extends PathfinderMob {
     }
 
     @Override
-    public void checkDespawn() {}
+    public void checkDespawn() {
+        if (this.level() != Minecraft.getInstance().level) {
+            this.discard();
+        }
+    }
 
     @Override
     public void aiStep() {

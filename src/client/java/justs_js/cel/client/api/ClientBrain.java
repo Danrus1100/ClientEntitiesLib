@@ -4,23 +4,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.UnmodifiableIterator;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
-import justs_js.cel.CELModClient;
 import justs_js.cel.client.api.behaviour.ClientBehaviorControl;
 import justs_js.cel.client.api.sensor.ClientSensor;
 import justs_js.cel.client.api.sensor.ClientSensorType;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.memory.ExpirableValue;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.schedule.Activity;
 import org.jetbrains.annotations.NotNull;
 
@@ -123,8 +117,7 @@ public class ClientBrain<E extends ClientEntity> extends Brain<E> {
                 while(var11.hasNext()) {
                     BehaviorControl<? super E> behaviorControl = (BehaviorControl)var11.next();
                     if (behaviorControl.getStatus() == Behavior.Status.STOPPED) {
-                        boolean a = ((ClientBehaviorControl<? super E>)behaviorControl).tryStart(clientLevel, livingEntity, l);
-                        //CELModClient.LOGGER.info("{}: {}", behaviorControl.debugString(), a);
+                        ((ClientBehaviorControl<? super E>)behaviorControl).tryStart(clientLevel, livingEntity, l);
                     }
                 }
             }
@@ -160,9 +153,6 @@ public class ClientBrain<E extends ClientEntity> extends Brain<E> {
         }
 
         public ClientBrain<E> makeBrain(Dynamic<?> dynamic) {
-            //DataResult var10000 = this.codec.parse(dynamic);
-            //Logger var10001 = Brain.LOGGER;
-            //Objects.requireNonNull(var10001);
             return new ClientBrain<>(this.memoryTypes, this.sensorTypes, ImmutableList.of(), () -> this.codec);
         }
     }

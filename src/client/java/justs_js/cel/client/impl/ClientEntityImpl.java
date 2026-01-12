@@ -1,4 +1,4 @@
-package justs_js.cel;
+package justs_js.cel.client.impl;
 
 import justs_js.cel.client.api.ClientEntity;
 import net.minecraft.core.particles.ParticleTypes;

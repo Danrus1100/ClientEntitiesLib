@@ -1,6 +1,5 @@
 package justs_js.cel.client.api.behaviour;
 
-import justs_js.cel.CELModClient;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;

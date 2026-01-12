@@ -1,6 +1,6 @@
 package justs_js.cel.client;
 
-import justs_js.cel.CELModClient;
+import justs_js.cel.CELModLib;
 import justs_js.cel.client.api.ClientEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -16,28 +16,20 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.entity.EntityTickList;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ClientEntitiesController {
-    private Map<String, Queue<Input>> inputs;
     private final EntityTickList entityTickList = new EntityTickList();
 
-    private int clientEntitiesId = 5000;
-
-    public void addInput(String nickname, Input input) {
-        inputs.computeIfAbsent(nickname, key -> new ConcurrentLinkedQueue<>()).add(input);
-    }
+    private int clientEntitiesId = Integer.MAX_VALUE;
 
     public void forEach(Consumer<Entity> consumer) {
         entityTickList.forEach(consumer);
     }
 
     public void addEntity(ClientEntity entity) {
-        entity.setId(clientEntitiesId++);
+        entity.setId(--clientEntitiesId);
         entityTickList.add(entity);
         Minecraft.getInstance().level.addEntity(entity);
     }
@@ -45,8 +37,12 @@ public class ClientEntitiesController {
     public void tick(ClientLevel clientLevel) {
         if (clientLevel.getGameTime() % 5 != 0) return;
         ProfilerFiller profilerFiller = Profiler.get();
+        Set<Entity> removed = new HashSet<>();
         this.entityTickList.forEach((entity) -> {
-            if (entity.isRemoved()) return;
+            if (entity.isRemoved()) {
+                removed.add(entity);
+                return;
+            }
             profilerFiller.push("checkDespawn");
             entity.checkDespawn();
             profilerFiller.pop();
@@ -63,6 +59,9 @@ public class ClientEntitiesController {
             clientLevel.guardEntityTick(this::tickNonPassenger, entity);
             profilerFiller.pop();
         });
+        for (Entity entity : removed) {
+            this.entityTickList.remove(entity);
+        }
     }
 
     public void tickNonPassenger(Entity entity) {
@@ -107,21 +106,14 @@ public class ClientEntitiesController {
     }
 
     private <T extends Entity> EntityType<T> register(ResourceKey<EntityType<?>> resourceKey, EntityType.Builder<T> builder) {
-        return (EntityType) Registry.register(BuiltInRegistries.ENTITY_TYPE, resourceKey, builder.build(resourceKey));
+        return Registry.register(BuiltInRegistries.ENTITY_TYPE, resourceKey, builder.build(resourceKey));
     }
 
-    private ResourceKey<EntityType<?>> vanillaEntityId(String string) {
-        return ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.withDefaultNamespace(string));
+    private ResourceKey<EntityType<?>> cellEntityId(String string) {
+        return ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(CELModLib.MOD_ID, string));
     }
 
     public <T extends Entity> EntityType<T> register(String string, EntityType.Builder<T> builder) {
-        return register(vanillaEntityId(string), builder);
-    }
-
-    public enum Input {
-        JUMP,
-        FOLLOW,
-        STOP,
-        GOTO
+        return register(cellEntityId(string), builder);
     }
 }

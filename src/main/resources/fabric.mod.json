@@ -13,7 +13,7 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"justs_js.cel.CELModClient"
+			"justs_js.cel.CELModLib"
 		]
 	},
 	"mixins": [{

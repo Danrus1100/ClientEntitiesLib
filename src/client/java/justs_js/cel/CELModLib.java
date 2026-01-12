@@ -2,43 +2,42 @@ package justs_js.cel;
 
 import justs_js.cel.client.ClientEntitiesController;
 import justs_js.cel.client.api.ClientEntity;
+import justs_js.cel.client.impl.ClientEntityImpl;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.NoopRenderer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.entity.PersistentEntitySectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
-public class CELModClient implements ClientModInitializer {
+public class CELModLib implements ClientModInitializer {
 	public static final String MOD_ID = "cel";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final ClientEntitiesController controller = new ClientEntitiesController();
 
-	public static final EntityType<ClientEntityImpl> CLIENT_ENTITY_IMPL = controller.register(
-			"client_entity_impl",
-			EntityType.Builder
-					.of(ClientEntityImpl::new, MobCategory.MISC)
-					.sized(0.6F, 1.95F)
-					.eyeHeight(1.62F)
-	);
-
 	@Override
 	public void onInitializeClient() {
 		ClientTickEvents.START_WORLD_TICK.register(controller::tick);
-		LOGGER.info("TwitchingArmorStand comes to the party!");
+		LOGGER.info("Client Entities Lib loaded.");
 
-		testImpl(); // todo: remove
+		//testImpl(); // todo: remove
 	}
 
 	private void testImpl() {
+		EntityType<ClientEntityImpl> CLIENT_ENTITY_IMPL = controller.register(
+				"client_entity_impl",
+				EntityType.Builder
+						.of(ClientEntityImpl::new, MobCategory.MISC)
+						.sized(0.6F, 1.95F)
+						.eyeHeight(1.62F)
+		);
+
 		ClientCommandRegistrationCallback.EVENT.register(
 				(dispatcher, registryAccess) -> {
 					dispatcher.register(
