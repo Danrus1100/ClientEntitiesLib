@@ -22,7 +22,7 @@ public class ClientFollowTargetSink extends ClientBehavior<ClientEntity> {
     @Override
     protected boolean checkExtraStartConditions(ClientLevel clientLevel, ClientEntity livingEntity) {
         Entity entity = livingEntity.getFollowTargetEntity();
-        return livingEntity.isAlive() && entity != null && !livingEntity.isInWater() && livingEntity.distanceToSqr(entity) > 8.0;
+        return livingEntity.isAlive() && entity != null && !livingEntity.isInWater() && livingEntity.distanceToSqr(entity) <= 16.0;
     }
 
     @Override
