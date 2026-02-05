@@ -6,6 +6,13 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
+def ifProp(String name, Closure consumer) {
+    def value = findProperty(name)
+    if (value != null) {
+        consumer.call(value.toString())
+    }
+}
+
 base {
 	archivesName = project.archives_base_name
 }
@@ -50,7 +57,9 @@ dependencies {
 //	mappings loom.officialMojangMappings()
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${project.parchment}@zip")
+        ifProp("parchment") { parchmentVersion ->
+            parchment("org.parchmentmc.data:parchment-${parchmentVersion}@zip")
+        }
     }
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
